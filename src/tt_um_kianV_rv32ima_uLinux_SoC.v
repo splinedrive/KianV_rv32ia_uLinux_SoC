@@ -24,7 +24,7 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
 
   wire uart_tx;
   wire uart_rx;
-  wire [1:0] led;
+  wire [6:0] led;
   wire ce0;
   wire ce1;
   wire sclk_ram;
@@ -32,19 +32,18 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
 
   wire clk_osc = clk;
 
-  assign uo_out[0] = 1'b0;  //sclk_ram;
-  assign uo_out[2:1] = led;
-  assign uo_out[3] = 1'b0;  //ce0;
+  assign uo_out[0] = led[0];  //sclk_ram;
+  assign uo_out[2:1] = led[2:1];
+  assign uo_out[3] = led[3];  //ce0;
   assign uo_out[4] = uart_tx;
-  assign uo_out[5] = 1'b0;  //ce1;
-  assign uo_out[6] = 1'b0;  //sclk_nor;
-  assign uo_out[7] = 1'b0;
+  assign uo_out[5] = led[4];  //ce1;
+  assign uo_out[6] = led[5];  //sclk_nor;
+  assign uo_out[7] = led[6];
 
   assign uart_rx = ui_in[3];
 
   assign uio_oe = {3'b111, sio_oe  /*[3:0]*/, 1'b1};
-  wire [2:0] not_connected;
-  assign {not_connected, sio3_i, sio2_i, sio1_so_miso_i, sio0_si_mosi_i} = {uio_in[7:5], uio_in[4:1]};
+  assign {sio3_i, sio2_i, sio1_so_miso_i, sio0_si_mosi_i} = uio_in[4:1];
   assign uio_out = {sclk_nor, ce1, sclk_ram, sio3_o, sio2_o, sio1_so_miso_o, sio0_si_mosi_o, ce0};
 
   soc soc_I (

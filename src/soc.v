@@ -22,7 +22,7 @@ module soc (
     input  wire       clk_osc,
     output wire       uart_tx,
     input  wire       uart_rx,
-    output wire [1:0] led,
+    output wire [6:0] led,
     output wire       ce0,
     output wire       sclk_ram,
     output wire       ce1,
@@ -56,7 +56,7 @@ module soc (
   assign sclk_ram = mem_sdram_valid ? sclk : 1'b1;
 
 
-  assign led = PC[4+:2];
+  assign led = PC[16+:7];
 
   assign clk = clk_osc;
 
