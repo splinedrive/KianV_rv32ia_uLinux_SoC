@@ -1,17 +1,44 @@
---- 
+---
 # Tiny Tapeout project information
 project:
   wokwi_id:    0        # If using wokwi, set this to your project's ID
 
 # If using an HDL, set wokwi_id as 0 and uncomment and list your source files here. 
 # Source files must be in ./src and you must list each source file separately
-#  source_files:        
-#    - counter.v
-#    - decoder.v
-#  top_module:  "tt_um_example"      # Put the name of your top module here, must start with "tt_um_". Make it unique by including your github username
+  source_files:        
+    - tt_um_kianV_rv32ia_uLinux_SoC.v
+    - tx_uart.v
+    - clint.v
+    - rx_uart.v
+    - qqspi.v
+    - soc.v
+    - fifo.v
+    - csr_decoder.v
+    - misa.vh
+    - alu_decoder.v
+    - register_file.v
+    - design_elements.v
+    - riscv_defines.vh
+    - main_fsm.v
+    - csr_exception_handler.v
+    - control_unit.v
+    - store_decoder.v
+    - datapath_unit.v
+    - csr_utilities.vh
+    - riscv_priv_csr_status.vh
+    - load_decoder.v
+    - extend.v
+    - rv32_amo_opcodes.vh
+    - load_alignment.v
+    - mcause.vh
+    - kianv_harris_mc_edition.v
+    - alu.v
+    - store_alignment.v
+    - defines_soc.vh
+  top_module:  "tt_um_kianV_rv32ia_uLinux_SoC"
 
 # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "1x1"    # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2 or 8x2
+  tiles: "8x2"    # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2 or 8x2
 
 # Keep a track of the submission yaml
 yaml_version: 4
@@ -21,22 +48,25 @@ yaml_version: 4
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation: 
-  author:       ""      # Your name
-  title:        ""      # Project title
-  language:     "Wokwi" # other examples include Verilog, Amaranth, VHDL, etc
-  description:  ""      # Short description of what your project does
+  author:       "Hirosh Dabui"      # Your name
+  title:        "KianV uLinux SoC"      # Project title
+  language:     "verilog" # other examples include Verilog, Amaranth, VHDL, etc
+  description:  "A RISC-V ASIC that can boot μLinux."      # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-      Explain how your project works
+    Here is an RV32IMA RISC-V processor that can boot and run uLinux.
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-      Explain how to test your project
+    You need to flash the bootloader, dtb, and the Linux image onto the NOR flash.
+    It was tested on the ICE40 with the same design at 35MHz.
+    There is a divider register located at 0x10_000_010. 
+    With the upper 16 bits, the CLINT can be configured, and with the lower 16 bits, the UART can be configured.
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
-    - none
+    - uart_rx
     - none
     - none
     - none
@@ -46,20 +76,20 @@ documentation:
     - none
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
-    - segment a
-    - segment b
-    - segment c
-    - segment d
-    - segment e
-    - segment f
-    - segment g
+    - uart_tx
+    - led[0]
+    - led[1]
+    - ce0
+    - sclk_ram
+    - ce1
+    - sclk_nor 
     - dot
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
-    - none
-    - none
-    - none
-    - none
+    - sio0_mosi
+    - sio1_miso
+    - sio2
+    - sio3
     - none
     - none
     - none
@@ -70,5 +100,5 @@ documentation:
   external_hw:  ""      # Describe any external hardware needed
   discord:      ""      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
   doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     0       # Clock frequency in Hz (if required)
+  clock_hz:     35MHz   # Clock frequency in Hz (if required)
   picture:      ""      # relative path to a picture in your repository (must be 512kb or less)
