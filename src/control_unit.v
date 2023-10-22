@@ -37,6 +37,8 @@ module control_unit (
         output wire [                 2:0] ImmSrc,
         output wire [`STORE_OP_WIDTH -1:0] STOREop,
         output wire [`LOAD_OP_WIDTH  -1:0] LOADop,
+        output wire [`MUL_OP_WIDTH   -1:0] MULop,
+        output wire [`DIV_OP_WIDTH   -1:0] DIVop,
         output wire [`CSR_OP_WIDTH   -1:0] CSRop,
         output wire                        CSRwe,
         output wire                        CSRre,
@@ -72,16 +74,26 @@ module control_unit (
         input wire [31:0] mstatus,
 
         output wire mem_valid,
-        input  wire mem_ready
+        input  wire mem_ready,
+
+        output wire mul_valid,
+        input  wire mul_ready,
+
+        output wire div_valid,
+        input  wire div_ready
     );
 
     wire [`ALU_OP_WIDTH   -1:0] ALUOp;
     wire [`AMO_OP_WIDTH   -1:0] AMOop;
     wire PCUpdate;
     wire Branch;
+    wire mul_ext_ready;
+    wire mul_ext_valid;
 
     wire taken_branch = !Zero;
     assign PCWrite = Branch & taken_branch | PCUpdate;
+
+    assign mul_ext_ready = mul_ready | div_ready;
 
     wire amo_data_load;
     wire amo_operation_store;
@@ -139,7 +151,10 @@ module control_unit (
                  .mip             (mip),
 
                  .mem_valid(mem_valid),
-                 .mem_ready(mem_ready)
+                 .mem_ready(mem_ready),
+
+                 .mul_ext_valid(mul_ext_valid),
+                 .mul_ext_ready(mul_ext_ready)
              );
 
     load_decoder load_decoder_I (
@@ -173,5 +188,13 @@ module control_unit (
                     .ALUControl(ALUControl)
                 );
 
+    multiplier_extension_decoder mul_ext_de_I (
+                                     funct3,
+                                     MULop,
+                                     DIVop,
+                                     mul_ext_valid,
+                                     mul_valid,
+                                     div_valid
+                                 );
 
 endmodule

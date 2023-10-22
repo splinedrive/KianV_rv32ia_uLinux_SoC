@@ -26,7 +26,7 @@ module tb ();
     wire [7:0] uio_out;
     wire [7:0] uio_oe;
 
-    tt_um_kianV_rv32ia_uLinux_SoC tt_um_kianV_rv32ia_uLinux_SoC_I (
+    tt_um_kianV_rv32ima_uLinux_SoC tt_um_kianV_rv32ima_uLinux_SoC_I (
                             // include power ports for the Gate Level test
 `ifdef GL_TEST
                             .VPWR   (1'b1),

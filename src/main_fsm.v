@@ -72,6 +72,9 @@ module main_fsm (
         input wire [31:0] mip,
         input wire [31:0] mstatus,
 
+        output reg  mul_ext_valid,
+        input  wire mul_ext_ready,
+
         input wire mem_ready
     );
     // S0  --> Fetch
@@ -236,7 +239,7 @@ module main_fsm (
                 if (mtip_raised || msip_raised) next_state = S36; //interrupt
                 else if (is_load || is_store) next_state = S2;
                 else if (is_rtype && !funct7b0) next_state = S6;  // reg op reg in common alu
-                //else if (is_rtype && funct7b0) next_state = S14;  // reg op reg in mul/div
+                else if (is_rtype && funct7b0) next_state = S14;  // reg op reg in mul/div
                 else if (is_itype) next_state = S8;
                 else if (is_jal) next_state = S9;
                 else if (is_jalr) next_state = S11;
@@ -268,8 +271,8 @@ module main_fsm (
             S11: next_state = S9;  // jalr
             S12: next_state = S7;  // lui
             S13: next_state = S7;  // auipc
-            //            S14: next_state = mul_ext_ready ? S15 : S14;  // exec multplier
-            //            S15: next_state = S0;  // multiplier wb
+            S14: next_state = mul_ext_ready ? S15 : S14;  // exec multplier
+            S15: next_state = S0;  // multiplier wb
             S16: next_state = csr_access_fault ? S32 : S17;  // exec system/itype
             S17: next_state = S0;  // system wb
 
@@ -375,6 +378,7 @@ module main_fsm (
         muxed_Aluout_or_amo_rd_wr     = 1'b0;
 
         mem_valid                   = 1'b0;
+        mul_ext_valid               = 1'b0;
 
         exception_event = 1'b0;
         cause = 32'b0;
@@ -500,23 +504,21 @@ module main_fsm (
                 ALUSrcB = `SRCB_IMM_EXT;
                 ALUOp   = `ALU_OP_AUIPC;  // pc + imm<<12
             end
-            /*
-              S14: begin
-                  // execute rtype
-                  // MULOut <- rs1 op rs2
-                  ALUSrcA       = `SRCA_RD1_BUF;
-                  ALUSrcB       = `SRCB_RD2_BUF;
-                  mul_ext_valid = 1'b1;  // todo ALU_OP
-              end
-              S15: begin
-                  // multiplier wb
-                  // rd <- MULOut
-                  mem_valid = 1'b1;
-                  ResultSrc = `RESULT_MULOUT;
-                  RegWrite  = 1'b1;
-                  incr_inst_retired = 1'b1;
-              end
-            */
+            S14: begin
+                // execute rtype
+                // MULOut <- rs1 op rs2
+                ALUSrcA       = `SRCA_RD1_BUF;
+                ALUSrcB       = `SRCB_RD2_BUF;
+                mul_ext_valid = 1'b1;  // todo ALU_OP
+            end
+            S15: begin
+                // multiplier wb
+                // rd <- MULOut
+                mem_valid = 1'b1;
+                ResultSrc = `RESULT_MULOUT;
+                RegWrite  = 1'b1;
+                incr_inst_retired = 1'b1;
+            end
             S16: begin
                 // execute itype
                 // CSRData

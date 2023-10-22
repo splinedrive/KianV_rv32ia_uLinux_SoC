@@ -6,7 +6,7 @@ project:
 # If using an HDL, set wokwi_id as 0 and uncomment and list your source files here. 
 # Source files must be in ./src and you must list each source file separately
   source_files:        
-    - tt_um_kianV_rv32ia_uLinux_SoC.v
+    - tt_um_kianV_rv32ima_uLinux_SoC.v
     - tx_uart.v
     - clint.v
     - rx_uart.v
@@ -35,7 +35,12 @@ project:
     - alu.v
     - store_alignment.v
     - defines_soc.vh
-  top_module:  "tt_um_kianV_rv32ia_uLinux_SoC"
+    - divider.v
+    - divider_decoder.v
+    - multiplier.v
+    - multiplier_decoder.v
+    - multiplier_extension_decoder.v
+  top_module:  "tt_um_kianV_rv32ima_uLinux_SoC"
 
 # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "8x2"    # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2 or 8x2

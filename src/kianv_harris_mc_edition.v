@@ -53,6 +53,8 @@ module kianv_harris_mc_edition #(
     wire [                  2:0] ImmSrc;
     wire [`STORE_OP_WIDTH  -1:0] STOREop;
     wire [`LOAD_OP_WIDTH   -1:0] LOADop;
+    wire [`MUL_OP_WIDTH    -1:0] MULop;
+    wire [`DIV_OP_WIDTH    -1:0] DIVop;
     wire [`CSR_OP_WIDTH    -1:0] CSRop;
     wire                         CSRwe;
     wire                         CSRre;
@@ -69,6 +71,11 @@ module kianv_harris_mc_edition #(
     wire                         fetched_instr;
     wire                         incr_inst_retired;
     wire                         ALUOutWrite;
+
+    wire                         mul_valid;
+    wire                         mul_ready;
+    wire                         div_valid;
+    wire                         div_ready;
 
     assign op     = Instr[6:0];
     assign funct3 = Instr[14:12];
@@ -128,10 +135,16 @@ module kianv_harris_mc_edition #(
                      .ALUOutWrite           (ALUOutWrite),
                      .mem_valid             (mem_valid),
                      .mem_ready             (mem_ready),
+                     .MULop                 (MULop),
                      .unaligned_access_load (unaligned_access_load),
                      .unaligned_access_store(unaligned_access_store),
                      .access_fault          (access_fault),
 
+                     .mul_valid                  (mul_valid),
+                     .mul_ready                  (mul_ready),
+                     .DIVop                      (DIVop),
+                     .div_valid                  (div_valid),
+                     .div_ready                  (div_ready),
                      // AMO
                      .amo_temp_write_operation   (amo_temp_write_operation),
                      .amo_set_reserved_state_load(amo_set_reserved_state_load),
@@ -191,6 +204,12 @@ module kianv_harris_mc_edition #(
                       .unaligned_access_load(unaligned_access_load),
                       .unaligned_access_store(unaligned_access_store),
 
+                      .MULop      (MULop),
+                      .mul_valid  (mul_valid),
+                      .mul_ready  (mul_ready),
+                      .DIVop      (DIVop),
+                      .div_valid  (div_valid),
+                      .div_ready  (div_ready),
                       .ProgCounter(PC),
 
                       // AMO

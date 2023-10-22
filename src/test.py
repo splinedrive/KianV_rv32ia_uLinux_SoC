@@ -4,7 +4,7 @@ from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
 @cocotb.test()
-async def ttt_um_kianV_rv32ia_uLinux_SoC(dut):
+async def ttt_um_kianV_rv32ima_uLinux_SoC(dut):
     dut._log.info("start")
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())

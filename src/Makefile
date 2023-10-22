@@ -9,7 +9,7 @@ TOPLEVEL_LANG ?= verilog
 ifneq ($(GATES),yes)
 
 # this is the only part you should need to modify:
-VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/tt_um_kianV_rv32ia_uLinux_SoC.v # $(PWD)/decoder.v
+VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/tt_um_kianV_rv32ima_uLinux_SoC.v # $(PWD)/decoder.v
 VERILOG_SOURCES += $(PWD)/tx_uart.v
 VERILOG_SOURCES += $(PWD)/clint.v
 VERILOG_SOURCES += $(PWD)/rx_uart.v
@@ -39,6 +39,12 @@ VERILOG_SOURCES += $(PWD)/kianv_harris_mc_edition.v
 VERILOG_SOURCES += $(PWD)/alu.v
 VERILOG_SOURCES += $(PWD)/store_alignment.v
 VERILOG_SOURCES += $(PWD)/defines_soc.vh
+
+VERILOG_SOURCES += $(PWD)/divider.v
+VERILOG_SOURCES += $(PWD)/divider_decoder.v
+VERILOG_SOURCES += $(PWD)/multiplier.v
+VERILOG_SOURCES += $(PWD)/multiplier_decoder.v
+VERILOG_SOURCES += $(PWD)/multiplier_extension_decoder.v
 
 else
 

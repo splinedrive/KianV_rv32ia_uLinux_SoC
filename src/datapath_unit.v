@@ -36,6 +36,8 @@ module datapath_unit #(
         input  wire [                 2:0] ImmSrc,
         input  wire [`STORE_OP_WIDTH -1:0] STOREop,
         input  wire [`LOAD_OP_WIDTH  -1:0] LOADop,
+        input  wire [`MUL_OP_WIDTH   -1:0] MULop,
+        input  wire [`DIV_OP_WIDTH   -1:0] DIVop,
         input  wire [`CSR_OP_WIDTH   -1:0] CSRop,
         input  wire                        CSRwe,
         input  wire                        CSRre,
@@ -68,6 +70,10 @@ module datapath_unit #(
         output wire [31:0] mem_addr,
         output wire [31:0] mem_wdata,
         input  wire [31:0] mem_rdata,
+        input  wire        mul_valid,
+        output wire        mul_ready,
+        input  wire        div_valid,
+        output wire        div_ready,
         output wire [31:0] ProgCounter,
         output wire        unaligned_access_load,
         output wire        unaligned_access_store,
@@ -117,6 +123,10 @@ module datapath_unit #(
     wire [31:0] A1, A2;
     wire [31:0] SrcA, SrcB;
     wire [31:0] ALUResult;
+    wire [31:0] MULResult;
+    wire [31:0] DIVResult;
+    wire [31:0] MULExtResult;
+    wire [31:0] MULExtResultOut;
     wire [31:0] ALUOut;
     wire [31:0] Result;
     wire [ 3:0] wmask;
@@ -125,6 +135,7 @@ module datapath_unit #(
     wire [31:0] CSRData;
     wire [ 1:0] mem_addr_align_latch;
     wire [31:0] CSRDataOut;
+    wire        div_by_zero_err;
 
     assign immb10      = ImmExt[10];
     assign ProgCounter = PC;
@@ -166,7 +177,7 @@ module datapath_unit #(
              alu_out_or_amo_scw,
              DataLatched_or_AMOtempData,
              ALUResult,
-             0,
+             MULExtResultOut,
              CSRDataOut,
              amo_buffer_addr_value,
              ResultSrc,
@@ -268,6 +279,12 @@ module datapath_unit #(
                CSRDataOut
            );
 
+    dlatch #(32) MULExtResultOut_I (
+               clk,
+               MULExtResult,
+               MULExtResultOut
+           );
+
     extend extend_I (
                Instr[31:7],
                ImmSrc,
@@ -339,6 +356,36 @@ module datapath_unit #(
             ALUResult,
             Zero
         );
+
+    mux2 #(32) mul_ext_I (
+             MULResult,
+             DIVResult,
+             !mul_valid,
+             MULExtResult
+         );
+
+    multiplier mul_I (
+                   clk,
+                   resetn,
+                   SrcA,
+                   SrcB,
+                   MULop,
+                   MULResult,
+                   mul_valid,
+                   mul_ready
+               );
+
+    divider div_I (
+                clk,
+                resetn,
+                SrcA,
+                SrcB,
+                DIVop,
+                DIVResult,
+                div_valid,
+                div_ready,
+                div_by_zero_err  /* todo: */
+            );
 
     csr_exception_handler csr_exception_handler_I (
                               .clk              (clk),
