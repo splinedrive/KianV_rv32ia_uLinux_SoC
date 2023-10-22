@@ -16,11 +16,11 @@ jobs:
       - name: Build GDS
         uses: TinyTapeout/tt-gds-action@tt05
 
-          #  viewer:
-          #    needs: gds
-          #    runs-on: ubuntu-latest
-          #    permissions:
-          #      pages: write      # to deploy to Pages
-          #      id-token: write   # to verify the deployment originates from an appropriate source
-          #    steps:
-          #      - uses: TinyTapeout/tt-gds-action/viewer@tt05
+  viewer:
+    needs: gds
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    steps:
+      - uses: TinyTapeout/tt-gds-action/viewer@tt05
