@@ -32,15 +32,15 @@ module tt_um_kianV_rv32ia_uLinux_SoC (
 
   wire clk_osc = clk;
 
-  assign uo_out[0] = uart_tx;
+  assign uo_out[0] = sclk_ram;
   assign uo_out[2:1] = led;
   assign uo_out[3] = ce0;
-  assign uo_out[4] = sclk_ram;
+  assign uo_out[4] = uart_tx;
   assign uo_out[5] = ce1;
   assign uo_out[6] = sclk_nor;
   assign uo_out[7] = 1'b0;
 
-  assign uart_rx = ui_in[0];
+  assign uart_rx = ui_in[3];
 
   assign uio_oe = {4'b1111, sio_oe};
   assign {sio3_i, sio2_i, sio1_so_miso_i, sio0_si_mosi_i} = uio_in[3:0];
