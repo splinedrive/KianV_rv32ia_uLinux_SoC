@@ -95,10 +95,10 @@ documentation:
     - sio1_miso
     - sio2
     - sio3
-    - none
-    - none
-    - none
-    - none
+    - not_connected[0]
+    - not_connected[1]
+    - not_connected[2]
+    - not_connected[3]
 
 # The following fields are optional
   tag:          ""      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
