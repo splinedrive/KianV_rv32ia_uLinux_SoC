@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2023 Uri Shaked <uri@wokwi.com>
+// SPDX-License-Identifier: MIT
+
 `default_nettype none `timescale 1ns / 1ps
 
 /*
@@ -19,12 +22,15 @@ module tb ();
   reg clk;
   reg rst_n;
   reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
+  wire [7:0] ui_in = {4'b0, uart_rx, 3'b0};
+  wire [7:0] uio_in;
 
   wire [7:0] uo_out;
   wire [7:0] uio_out;
   wire [7:0] uio_oe;
+
+  reg uart_rx;
+  wire uart_tx = uo_out[4];
 
   tt_um_kianV_rv32ima_uLinux_SoC tt_um_kianV_rv32ima_uLinux_SoC_I (
       // include power ports for the Gate Level test
@@ -40,6 +46,27 @@ module tb ();
       .ena    (ena),      // enable - goes high when design is selected
       .clk    (clk),      // clock
       .rst_n  (rst_n)     // not reset
+  );
+
+  wire flash_clk;
+  assign #10 flash_clk = uio_out[7];
+  wire flash_csb = uio_out[6];
+  wire flash_io3 = uio_oe[4] ? uio_out[4] : 'z;
+  wire flash_io2 = uio_oe[3] ? uio_out[3] : 'z;
+  wire flash_io1 = uio_oe[2] ? uio_out[2] : 'z;
+  wire flash_io0 = uio_oe[1] ? uio_out[1] : 'z;
+  assign uio_in = {uio_out[7:5], flash_io3, flash_io2, flash_io1, flash_io0, uio_out[0]};
+
+  spiflash #(
+      // change the hex file to match your project
+      .FILENAME("firmware/firmware.hex")
+  ) spiflash (
+      .csb(flash_csb),
+      .clk(flash_clk),
+      .io0(flash_io0),
+      .io1(flash_io1),
+      .io2(flash_io2),
+      .io3(flash_io3)
   );
 
 endmodule
