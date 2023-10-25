@@ -1,4 +1,4 @@
-`default_nettype none `timescale 1 ns / 100 ps
+`default_nettype none
 module tt_um_kianV_rv32ima_uLinux_SoC (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
@@ -65,9 +65,9 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
       .sio2_o        (sio2_o),
       .sio3_o        (sio3_o),
 
-      .sio_oe  (sio_oe),
+      .sio_oe(sio_oe),
       .sclk_nor(sclk_nor),
-      .resetn  (rst_n)
+      .rst_n(rst_n)
   );
 
 endmodule

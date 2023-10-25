@@ -17,7 +17,7 @@
  *
  */
 `default_nettype none
-`timescale 1 ns/100 ps
+
 
 `include "riscv_defines.vh"
 

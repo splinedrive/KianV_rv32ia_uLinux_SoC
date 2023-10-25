@@ -16,7 +16,7 @@
  *  or in connection with the use or performance of this software.
  *
  */
-`default_nettype none `timescale 1 ns / 100 ps
+`default_nettype none
 `include "defines_soc.vh"
 module soc (
     input  wire       clk_osc,
@@ -40,7 +40,7 @@ module soc (
 
     output wire [3:0] sio_oe,
 
-    input wire resetn
+    input wire rst_n
 );
 
   wire clk;
@@ -66,6 +66,23 @@ module soc (
   localparam BLOCK_ADDRESS_LEN = BYTE_ADDRESS_LEN - $clog2(BYTES_PER_BLOCK);
 
   localparam BRAM_ADDR_WIDTH = $clog2(`BRAM_WORDS);
+
+  //////////////////////////////////////////////////////////////////////////////
+  /* SYSCON */
+
+  wire is_valid_reboot_addr = (cpu_mem_addr == `REBOOT_ADDR);
+  wire is_valid_reboot_data = (cpu_mem_wdata[15:0] == `REBOOT_DATA);
+
+  wire is_reboot_valid = cpu_mem_valid && is_valid_reboot_addr && is_valid_reboot_data && wr;
+
+  // reset
+  reg [3:0] rst_cnt;
+  wire resetn = rst_cnt[3];
+
+  always @(posedge clk) begin
+    if (!rst_n || is_reboot_valid) rst_cnt <= 0;
+    else rst_cnt <= rst_cnt + {3'b0, !resetn};
+  end
 
   // cpu
   wire                      [31:0]                                           pc;

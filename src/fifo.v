@@ -17,7 +17,7 @@
  *
  */
 
-`default_nettype none `timescale 1 ns / 100 ps
+`default_nettype none
 module fifo #(
     parameter DATA_WIDTH = 8,
     parameter DEPTH = 4

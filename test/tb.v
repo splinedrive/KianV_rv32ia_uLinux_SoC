@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: © 2023 Uri Shaked <uri@wokwi.com>
+// SPDX-FileCopyrightText: © 2023 Uri Shaked   <uri@wokwi.com>
+//                                Hirosh Dabui <hirosh@dabui.de>
 // SPDX-License-Identifier: MIT
 
 `default_nettype none `timescale 1ns / 1ps
@@ -10,13 +11,6 @@ that can be driven / tested by the cocotb test.py
 
 // testbench is controlled by test.py
 module tb ();
-
-  // this part dumps the trace to a vcd file that can be viewed with GTKWave
-  initial begin
-    $dumpfile("tb.vcd");
-    $dumpvars(0, tb);
-    #1;
-  end
 
   // wire up the inputs and outputs
   reg clk;
@@ -48,25 +42,45 @@ module tb ();
       .rst_n  (rst_n)     // not reset
   );
 
-  wire flash_clk;
-  assign #10 flash_clk = uio_out[7];
-  wire flash_csb = uio_out[6];
-  wire flash_io3 = uio_oe[4] ? uio_out[4] : 'z;
-  wire flash_io2 = uio_oe[3] ? uio_out[3] : 'z;
-  wire flash_io1 = uio_oe[2] ? uio_out[2] : 'z;
-  wire flash_io0 = uio_oe[1] ? uio_out[1] : 'z;
-  assign uio_in = {uio_out[7:5], flash_io3, flash_io2, flash_io1, flash_io0, uio_out[0]};
+  wire spi_clk_nor;
+  wire spi_clk_psram;
+  assign #10 spi_clk_nor = uio_out[7];
+  assign spi_clk_psram = uio_out[5];
+
+  wire spi_ce0 = uio_out[0];
+  wire spi_ce1 = uio_out[6];
+
+  wire spi_io3 = uio_oe[4] ? uio_out[4] : 'z;
+  wire spi_io2 = uio_oe[3] ? uio_out[3] : 'z;
+  wire spi_io1 = uio_oe[2] ? uio_out[2] : 'z;
+  wire spi_io0 = uio_oe[1] ? uio_out[1] : 'z;
+  assign uio_in = {uio_out[7:5], spi_io3, spi_io2, spi_io1, spi_io0, uio_out[0]};
 
   spiflash #(
       // change the hex file to match your project
       .FILENAME("firmware/firmware.hex")
   ) spiflash (
-      .csb(flash_csb),
-      .clk(flash_clk),
-      .io0(flash_io0),
-      .io1(flash_io1),
-      .io2(flash_io2),
-      .io3(flash_io3)
+      .csb(spi_ce1),
+      .clk(spi_clk_nor),
+      .io0(spi_io0),
+      .io1(spi_io1),
+      .io2(spi_io2),
+      .io3(spi_io3)
   );
+
+  psram psram_I (
+      .ce_n(spi_ce0),
+      .sck (spi_clk_psram),
+      .dio ({spi_io3, spi_io2, spi_io1, spi_io0})
+  );
+
+
+  // this part dumps the trace to a vcd file that can be viewed with GTKWave
+  initial begin
+    $dumpfile("tb.vcd");
+    $dumpvars(0, tb);
+    #1;
+  end
+
 
 endmodule

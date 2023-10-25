@@ -15,14 +15,14 @@ async def test_uart(dut):
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
-    await ClockCycles(dut.clk, 20000)
         
-    expected_str = b"Hello UART\n"
+    await ClockCycles(dut.clk, 20000*6)
 
+    expected_str = b"Hello UART\n"
     data = await uart_sink.read(len(expected_str))
     dut._log.info(f"UART Data: {data}")
     assert data == expected_str
-    
+
     # The code should convert these to lowercase and echo them
     await uart_source.write(b'Q')
     await ClockCycles(dut.clk, 2500)

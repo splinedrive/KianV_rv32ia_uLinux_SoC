@@ -16,7 +16,7 @@
  *  or in connection with the use or performance of this software.
  *
  */
-`default_nettype none `timescale 1ns / 1ps
+`default_nettype none
 module tx_uart (
     input wire clk,
     input wire resetn,
@@ -42,18 +42,6 @@ module tx_uart (
   wire [15:0] CYCLES_PER_SYMBOL;
   assign CYCLES_PER_SYMBOL = div;
 
-`ifdef SIM
-  always @(posedge clk) begin
-    if (ready) begin
-      $write("%c", sim_tx_data);
-      $fflush;
-    end
-  end
-`endif
-
-`ifdef SIM
-  reg [7:0] sim_tx_data;
-`endif
   always @(posedge clk) begin
 
     if (resetn == 1'b0) begin
@@ -63,9 +51,6 @@ module tx_uart (
       bit_idx     <= 0;
       tx_data_reg <= 0;
       txfer_done  <= 0;
-`ifdef SIM
-      sim_tx_data <= 0;
-`endif
     end else begin
 
       case (state)
@@ -73,9 +58,6 @@ module tx_uart (
         0: begin  /* idle */
           txfer_done <= 1'b0;
           if (valid & !txfer_done) begin
-`ifdef SIM
-            sim_tx_data <= tx_data;
-`endif
             tx_out <= 1'b0;  /* start bit */
             tx_data_reg <= tx_data;
 

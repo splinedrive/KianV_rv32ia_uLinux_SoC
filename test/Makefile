@@ -3,11 +3,14 @@
 
 # defaults
 SIM ?= icarus
+#SIM_ARGS=-fst
+#SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 PROJ = $(PWD)/../src
 
-VERILOG_SOURCES += $(PWD)/tb.v 
-VERILOG_SOURCES += $(PWD)/spiflash.v 
+VERILOG_SOURCES += $(PWD)/tb.v
+VERILOG_SOURCES += $(PWD)/spiflash.v
+VERILOG_SOURCES += $(PWD)/psram.v
 
 # normal simulation
 ifneq ($(GATES),yes)

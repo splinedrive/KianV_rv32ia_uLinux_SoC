@@ -16,7 +16,7 @@
  *  or in connection with the use or performance of this software.
  *
  */
-`default_nettype none `timescale 1 ns / 100 ps
+`default_nettype none
 `include "riscv_defines.vh"
 
 module alu (
