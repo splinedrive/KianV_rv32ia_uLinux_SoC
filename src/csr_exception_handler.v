@@ -65,17 +65,17 @@ module csr_exception_handler #(
 
     // CSR
     // csr rdcycle[H], rdtime[H], rdinstret[H]
-    wire [63:0] cycle_counter;
-    wire [63:0] instr_counter;
+    wire [47:0] cycle_counter;
+    wire [47:0] instr_counter;
 
     wire increase_instruction = incr_inst_retired;
-    counter #(64) instr_cnt_I (
+    counter #(48) instr_cnt_I (
                 resetn,
                 clk,
                 incr_inst_retired,
                 instr_counter
             );
-    counter #(64) cycle_cnt_I (
+    counter #(48) cycle_cnt_I (
                 resetn,
                 clk,
                 1'b1,
@@ -166,11 +166,11 @@ module csr_exception_handler #(
         if (re) begin
             case (CSRAddr)
                 `CSR_REG_INSTRET:   rdata = instr_counter[31:0];
-                `CSR_REG_INSTRETH:  rdata = instr_counter[63:32];
+                `CSR_REG_INSTRETH:  rdata = {16'b0, instr_counter[47:32]};
                 `CSR_REG_CYCLE:     rdata = cycle_counter[31:0];
-                `CSR_REG_CYCLEH:    rdata = cycle_counter[63:32];
+                `CSR_REG_CYCLEH:    rdata = {16'b0, cycle_counter[47:32]};
                 `CSR_REG_TIME:      rdata = cycle_counter[31:0];
-                `CSR_REG_TIMEH:     rdata = cycle_counter[63:32];
+                `CSR_REG_TIMEH:     rdata = {16'b0, cycle_counter[47:32]};
 
                 `CSR_REG_MSTATUS:   rdata = mstatus;
                 `CSR_REG_MSCRATCH:  rdata = mscratch;
