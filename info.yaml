@@ -3,9 +3,9 @@
 project:
   wokwi_id:    0        # If using wokwi, set this to your project's ID
 
-# If using an HDL, set wokwi_id as 0 and uncomment and list your source files here. 
+# If using an HDL, set wokwi_id as 0 and uncomment and list your source files here.
 # Source files must be in ./src and you must list each source file separately
-  source_files:        
+  source_files:
     - tt_um_kianV_rv32ima_uLinux_SoC.v
     - tx_uart.v
     - clint.v
@@ -52,7 +52,7 @@ yaml_version: 4
 # it does and how to operate it. This info will be automatically collected and used to make a datasheet for the chip.
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
-documentation: 
+documentation:
   author:       "Hirosh Dabui"      # Your name
   title:        "KianV uLinux SoC"      # Project title
   language:     "verilog" # other examples include Verilog, Amaranth, VHDL, etc
@@ -66,11 +66,11 @@ documentation:
   how_to_test:  |
     You need to flash the bootloader, dtb, and the Linux image onto the NOR flash.
     It was tested on the ICE40 with the same design at 35MHz.
-    There is a divider register located at 0x10_000_010. 
+    There is a divider register located at 0x10_000_010.
     With the upper 16 bits, the CLINT can be configured, and with the lower 16 bits, the UART can be configured.
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
-  inputs:               
+  inputs:
     - uart_rx
     - none
     - none
@@ -81,24 +81,24 @@ documentation:
     - none
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
-    - uart_tx
     - led[0]
     - led[1]
-    - ce0
-    - sclk_ram
-    - ce1
-    - sclk_nor 
-    - dot
+    - led[2]
+    - led[3]
+    - uart_tx
+    - led[4]
+    - led[5]
+    - led[6]
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
-    - sio0_mosi
-    - sio1_miso
-    - sio2
-    - sio3
-    - none
-    - none
-    - none
-    - none
+    - ce0 flash
+    - sio0
+    - sio1
+    - sck
+    - sd2
+    - sd3
+    - cs1 psram
+    - always high
 
 # The following fields are optional
   tag:          ""      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,

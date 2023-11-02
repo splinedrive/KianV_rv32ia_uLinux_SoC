@@ -42,26 +42,26 @@ module tb ();
       .rst_n  (rst_n)     // not reset
   );
 
-  wire spi_clk_nor;
-  wire spi_clk_psram;
-  assign #10 spi_clk_nor = uio_out[7];
-  assign spi_clk_psram = uio_out[5];
+  wire spi_flash_clk;
+  wire spi_psram_clk;
+  assign #10 spi_flash_clk = uio_out[3];
+  assign spi_psram_clk = uio_out[3];
 
   wire spi_ce0 = uio_out[0];
   wire spi_ce1 = uio_out[6];
 
-  wire spi_io3 = uio_oe[4] ? uio_out[4] : 'z;
-  wire spi_io2 = uio_oe[3] ? uio_out[3] : 'z;
+  wire spi_io3 = uio_oe[5] ? uio_out[5] : 'z;
+  wire spi_io2 = uio_oe[4] ? uio_out[4] : 'z;
   wire spi_io1 = uio_oe[2] ? uio_out[2] : 'z;
   wire spi_io0 = uio_oe[1] ? uio_out[1] : 'z;
-  assign uio_in = {uio_out[7:5], spi_io3, spi_io2, spi_io1, spi_io0, uio_out[0]};
+  assign uio_in = {uio_out[7:6], spi_io3, spi_io2, uio_out[3], spi_io1, spi_io0, uio_out[0]};
 
   spiflash #(
       // change the hex file to match your project
       .FILENAME("firmware/firmware.hex")
   ) spiflash (
-      .csb(spi_ce1),
-      .clk(spi_clk_nor),
+      .csb(spi_ce0),
+      .clk(spi_flash_clk),
       .io0(spi_io0),
       .io1(spi_io1),
       .io2(spi_io2),
@@ -69,11 +69,10 @@ module tb ();
   );
 
   psram psram_I (
-      .ce_n(spi_ce0),
-      .sck (spi_clk_psram),
+      .ce_n(spi_ce1),
+      .sck (spi_psram_clk),
       .dio ({spi_io3, spi_io2, spi_io1, spi_io0})
   );
-
 
   // this part dumps the trace to a vcd file that can be viewed with GTKWave
   initial begin

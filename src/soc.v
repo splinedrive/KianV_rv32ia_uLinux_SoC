@@ -24,9 +24,8 @@ module soc (
     input  wire       uart_rx,
     output wire [6:0] led,
     output wire       ce0,
-    output wire       sclk_ram,
     output wire       ce1,
-    output wire       sclk_nor,
+    output wire       sclk,
 
     input wire sio0_si_mosi_i,
     input wire sio1_so_miso_i,
@@ -49,16 +48,15 @@ module soc (
 
 
   wire cen;
-  assign ce0 = mem_sdram_valid ? cen : 1'b1;
-  assign ce1 = spi_nor_mem_valid ? cen : 1'b1;
+  wire sck;
+  assign ce0  = spi_nor_mem_valid ? cen : 1'b1;
+  assign ce1  = mem_sdram_valid ? cen : 1'b1;
+  assign sclk = (spi_nor_mem_valid | mem_sdram_valid) ? sck : 1'b1;
 
-  assign sclk_nor = spi_nor_mem_valid ? sclk : 1'b1;
-  assign sclk_ram = mem_sdram_valid ? sclk : 1'b1;
 
+  assign led  = PC[16+:7];
 
-  assign led = PC[16+:7];
-
-  assign clk = clk_osc;
+  assign clk  = clk_osc;
 
   localparam BYTE_ADDRESS_LEN = 32;
   localparam BYTES_PER_BLOCK = 4;
@@ -149,7 +147,6 @@ module soc (
 
   wire [31:0] qqspi_mem_rdata;
   wire qqspi_mem_ready;
-  wire sclk;
 
   qqspi #(
       .CEN_NPOL(1'b0)
@@ -164,7 +161,7 @@ module soc (
       .PSRAM_SPIFLASH(mem_sdram_valid),
 
       .cen (cen),
-      .sclk(sclk),
+      .sclk(sck),
 
       .sio0_si_mosi_i(sio0_si_mosi_i),
       .sio1_so_miso_i(sio1_so_miso_i),
