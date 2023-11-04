@@ -41,9 +41,15 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
 
   assign uart_rx = ui_in[3];
 
+  /*
   assign {sio3_i, sio2_i, sio1_so_miso_i, sio0_si_mosi_i} = {
     uio_in[5], uio_in[4], uio_in[2], uio_in[1]
   };
+  */
+  assign sio3_i = uio_in[5];
+  assign sio2_i = uio_in[4];
+  assign sio1_so_miso_i = uio_in[2];
+  assign sio0_si_mosi_i = uio_in[1];
 
   assign uio_oe = {2'b11, sio_oe[3:2], 1'b1, sio_oe[1:0], 1'b1};
   assign uio_out = {
