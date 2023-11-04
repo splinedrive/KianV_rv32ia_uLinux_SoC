@@ -49,8 +49,8 @@ module soc (
 
   wire cen;
   wire sck;
-  assign ce0  = spi_nor_mem_valid ? cen : 1'b1;
-  assign ce1  = mem_sdram_valid ? cen : 1'b1;
+//  assign ce0  = spi_nor_mem_valid ? cen : 1'b1;
+//  assign ce1  = mem_sdram_valid ? cen : 1'b1;
   assign sclk = sck;
 
 
@@ -175,6 +175,10 @@ module soc (
       .sio_oe        (sio_oe),
 
       .cs(),
+      .flash_valid(spi_nor_mem_valid),
+      .psram_valid(mem_sdram_valid),
+      .ce0(ce0),
+      .ce1(ce1),
 
       .clk   (clk),
       .resetn(resetn)

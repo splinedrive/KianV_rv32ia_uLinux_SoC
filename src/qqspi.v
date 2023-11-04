@@ -50,7 +50,11 @@ module qqspi #(
     output wire sio3_o,
 
     output reg [3:0] sio_oe,
-    output reg [1:0] cs
+    output reg [1:0] cs,
+    input wire flash_valid,
+    input wire psram_valid,
+    output reg ce0,
+    output reg ce1
 );
   localparam [7:0] CMD_QUAD_WRITE = 8'h38;
   localparam [7:0] CMD_FAST_READ_QUAD = 8'hEB;
@@ -133,6 +137,8 @@ module qqspi #(
       ready <= 0;
       state <= S0_IDLE;
     end else begin
+      ce0 <= !flash_valid;
+      ce1 <= !psram_valid;
       state <= next_state;
       cs <= cs_next;
       ce <= ce_next;
