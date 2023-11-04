@@ -19,7 +19,7 @@ async def test_uart(dut):
     await ClockCycles(dut.clk, 20000*6)
 
     expected_str = b"Hello UART\n"
-    data = await uart_sink.read(len(expected_str))
+    data = uart_sink.read_nowait(len(expected_str))
     dut._log.info(f"UART Data: {data}")
     assert data == expected_str
 
@@ -29,7 +29,6 @@ async def test_uart(dut):
     await uart_source.write(b'A')
     await ClockCycles(dut.clk, 4000)
 
-    data = await uart_sink.read(2)
+    data = uart_sink.read_nowait(2)
     dut._log.info(f"UART Data: {data}")
     assert data == b"qa"
-
