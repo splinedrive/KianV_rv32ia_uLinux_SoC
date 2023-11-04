@@ -51,7 +51,7 @@ module soc (
   wire sck;
   assign ce0  = spi_nor_mem_valid ? cen : 1'b1;
   assign ce1  = mem_sdram_valid ? cen : 1'b1;
-  assign sclk = (spi_nor_mem_valid ^ mem_sdram_valid) ? sck : 1'b1;
+  assign sclk = sck;
 
 
   assign led  = PC[16+:7];
