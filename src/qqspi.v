@@ -111,6 +111,8 @@ module qqspi #(
   reg is_quad_next;
   reg [5:0] xfer_cycles_next;
   reg ready_next;
+  reg ce0_next;
+  reg ce1_next;
 
   wire [1:0] byte_offset;
   wire [5:0] wr_cycles;
@@ -128,6 +130,8 @@ module qqspi #(
     if (!resetn) begin
       cs <= 2'b00;
       ce <= 1'b1;
+      ce0 <= 1'b1;
+      ce1 <= 1'b1;
       sclk <= 1'b0;
       sio_oe <= 4'b0000;
       sio_out <= 4'b0000;
@@ -137,10 +141,10 @@ module qqspi #(
       ready <= 0;
       state <= S0_IDLE;
     end else begin
-      ce0 <= !flash_valid;
-      ce1 <= !psram_valid;
       state <= next_state;
       cs <= cs_next;
+      ce0 <= ce0_next;
+      ce1 <= ce1_next;
       ce <= ce_next;
       sclk <= sclk_next;
       sio_oe <= sio_oe_next;
@@ -155,6 +159,8 @@ module qqspi #(
 
   always @(*) begin
     next_state = state;
+    ce0_next = ce0;
+    ce1_next = ce1;
     cs_next = cs;
     ce_next = ce;
     sclk_next = sclk;
@@ -190,14 +196,20 @@ module qqspi #(
           end else if (!valid && ready) begin
             ready_next = 1'b0;
             ce_next = 1'b1;
+            ce0_next = 1'b1;
+            ce1_next = 1'b1;
           end else begin
             ce_next = 1'b1;
+            ce0_next = 1'b1;
+            ce1_next = 1'b1;
           end
         end
 
         S1_SELECT_DEVICE: begin
           cs_next[1:0] = addr[22:21];
           ce_next = 1'b0;
+          ce0_next = !flash_valid;
+          ce1_next = !psram_valid;
           next_state = S2_CMD;
         end
 
