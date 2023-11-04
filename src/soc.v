@@ -47,12 +47,6 @@ module soc (
   wire [31:0] PC;
 
 
-  wire cen;
-  wire sck;
-//  assign ce0  = spi_nor_mem_valid ? cen : 1'b1;
-//  assign ce1  = mem_sdram_valid ? cen : 1'b1;
-  assign sclk = sck;
-
 
   assign led  = PC[16+:7];
 
@@ -160,8 +154,8 @@ module soc (
       .QUAD_MODE(1'b1),
       .PSRAM_SPIFLASH(mem_sdram_valid),
 
-      .cen (cen),
-      .sclk(sck),
+      .cen ( ),
+      .sclk(sclk),
 
       .sio0_si_mosi_i(sio0_si_mosi_i),
       .sio1_so_miso_i(sio1_so_miso_i),
