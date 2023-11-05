@@ -25,8 +25,7 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
   wire uart_tx;
   wire uart_rx;
   wire [6:0] led;
-  wire ce0;
-  wire ce1;
+  wire [2:0] ce;
   wire sclk;
 
   wire clk_osc = clk;
@@ -53,7 +52,7 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
 
   assign uio_oe = {2'b11, sio_oe[3:2], 1'b1, sio_oe[1:0], 1'b1};
   assign uio_out = {
-    1'b1  /* ce2 */, ce1, sio3_o, sio2_o, sclk, sio1_so_miso_o, sio0_si_mosi_o, ce0
+    ce[2], ce[1], sio3_o, sio2_o, sclk, sio1_so_miso_o, sio0_si_mosi_o, ce[0]
   };
 
   soc soc_I (
@@ -61,9 +60,8 @@ module tt_um_kianV_rv32ima_uLinux_SoC (
       .uart_tx(uart_tx),
       .uart_rx(uart_rx),
       .led    (led),
-      .ce0    (ce0),
       .sclk   (sclk),
-      .ce1    (ce1),
+      .ce     (ce),
 
       .sio0_si_mosi_i(sio0_si_mosi_i),
       .sio1_so_miso_i(sio1_so_miso_i),

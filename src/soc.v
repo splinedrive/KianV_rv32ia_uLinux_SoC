@@ -23,8 +23,7 @@ module soc (
     output wire       uart_tx,
     input  wire       uart_rx,
     output wire [6:0] led,
-    output wire       ce0,
-    output wire       ce1,
+    output wire [2:0] ce,
     output wire       sclk,
 
     input wire sio0_si_mosi_i,
@@ -142,9 +141,7 @@ module soc (
   wire [31:0] qqspi_mem_rdata;
   wire qqspi_mem_ready;
 
-  qqspi #(
-      .CEN_NPOL(1'b0)
-  ) qqspi_I (
+  qqspi #(.CHIP_SELECTS(3)) qqspi_I (
       .addr({1'b0, word_aligned_addr[21:0]}),
       .wdata(cpu_mem_wdata),
       .rdata(qqspi_mem_rdata),
@@ -154,7 +151,6 @@ module soc (
       .QUAD_MODE(1'b1),
       .PSRAM_SPIFLASH(mem_sdram_valid),
 
-      .cen ( ),
       .sclk(sclk),
 
       .sio0_si_mosi_i(sio0_si_mosi_i),
@@ -168,11 +164,8 @@ module soc (
       .sio3_o        (sio3_o),
       .sio_oe        (sio_oe),
 
-      .cs(),
-      .flash_valid(spi_nor_mem_valid),
-      .psram_valid(mem_sdram_valid),
-      .ce0(ce0),
-      .ce1(ce1),
+      .ce_ctrl({1'b0, mem_sdram_valid, spi_nor_mem_valid}),
+      .ce(ce),
 
       .clk   (clk),
       .resetn(resetn)
