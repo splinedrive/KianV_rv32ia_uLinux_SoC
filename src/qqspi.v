@@ -65,17 +65,6 @@ module qqspi #(parameter CHIP_SELECTS = 3)
   wire read;
   assign read = ~write;
 
-  wire [3:0] sio;
-
-  /*
-    genvar i;
-    generate
-        for (i = 0; i < 4; i = i + 1) begin
-            assign sio[i] = sio_oe[i] ? sio_out[i] : 1'bz;
-        end
-    endgenerate
-  */
-
   assign {sio3_o, sio2_o, sio1_so_miso_o, sio0_si_mosi_o} = sio_out;
   assign sio_in = {sio3_i, sio2_i, sio1_so_miso_i, sio0_si_mosi_i};
 

@@ -19,6 +19,7 @@
 `default_nettype none
 
 `include "riscv_defines.vh"
+/* verilator lint_off UNUSEDSIGNAL */
 module divider (
     input wire clk,
     input wire resetn,
@@ -122,3 +123,4 @@ module divider (
 
   assign divOrRemRslt = (is_div | is_divu) ? div_rslt : rem_rslt;
 endmodule
+/* verilator lint_on UNUSEDSIGNAL */

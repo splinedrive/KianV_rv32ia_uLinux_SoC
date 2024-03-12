@@ -22,8 +22,6 @@
 module datapath_unit #(
     parameter RV32E             = 0,
     parameter RESET_ADDR        = 0,
-    parameter SHOW_ASSEMBLER    = 0,
-    parameter SHOW_REGISTER_SET = 0,
     parameter STACKADDR         = 32'hffff_ffff
 ) (
     input wire clk,
@@ -104,8 +102,7 @@ module datapath_unit #(
   wire [31:0] WD3;
 
   register_file #(
-      .REGISTER_DEPTH(RV32E ? 16 : 32),
-      .STACKADDR(STACKADDR)
+      .REGISTER_DEPTH(RV32E ? 16 : 32)
   ) register_file_I (
       .clk(clk),
       .we (RegWrite),
@@ -135,7 +132,9 @@ module datapath_unit #(
   wire [31:0] CSRData;
   wire [ 1:0] mem_addr_align_latch;
   wire [31:0] CSRDataOut;
+/* verilator lint_off UNUSEDSIGNAL */
   wire        div_by_zero_err;
+/* verilator lint_on UNUSEDSIGNAL */
 
   assign immb10      = ImmExt[10];
   assign ProgCounter = PC;

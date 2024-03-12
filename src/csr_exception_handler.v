@@ -19,6 +19,7 @@
 `default_nettype none
 
 `include "riscv_defines.vh"
+/* verilator lint_off UNUSEDSIGNAL */
 module csr_exception_handler #(
         parameter MTVEC_INIT = 32'h0000_0000
     ) (
@@ -305,3 +306,4 @@ module csr_exception_handler #(
     end
 
 endmodule
+/* verilator lint_on UNUSEDSIGNAL */

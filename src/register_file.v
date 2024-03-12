@@ -18,9 +18,9 @@
  */
 `default_nettype none
 
+/* verilator lint_off UNUSEDSIGNAL */
 module register_file #(
-    parameter REGISTER_DEPTH = 32,  // rv32e = 16; rv32i = 32
-    parameter STACKADDR = 32'hffff_ffff
+    parameter REGISTER_DEPTH = 32  // rv32e = 16; rv32i = 32
 ) (
     input  wire        clk,
     input  wire        we,
@@ -32,14 +32,6 @@ module register_file #(
     output wire [31:0] rd2
 );
   reg [31:0] bank0[0:REGISTER_DEPTH -1];
-  integer i;
-
-  localparam X2 = 2;
-  initial begin
-    bank0[10] = 'h00;  // hartid
-    bank0[11] = 32'h80_000_000 + ((1024 * 1024 * 32) - 2048);  // 32'h81fffa00;  // dtb
-  end
-
 
   always @(posedge clk) begin
 
@@ -52,3 +44,4 @@ module register_file #(
   assign rd2 = A2 != 0 ? bank0[A2] : 32'b0;
 
 endmodule
+/* verilator lint_off UNUSEDSIGNAL */

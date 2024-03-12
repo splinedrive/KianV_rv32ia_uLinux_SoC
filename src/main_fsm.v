@@ -119,7 +119,6 @@ module main_fsm (
     // -> S27 (mem addr)
     // -> S28 (mem write)
     // -> s29 -> s0
-    wire funct7b5 = funct7[5];  // r-type
     wire funct7b0 = funct7[0];  // r-type
     wire [4:0] funct5 = funct7[6:2];
 
@@ -142,8 +141,7 @@ module main_fsm (
                     jalr = 7'b110_0111,  // implicit i-type
                     branch = 7'b110_0011,
                     lui = 7'b011_0111,  // u-type
-                    aupic = 7'b001_0111,  // u-type
-                    amo = 7'b010_1111;
+                    aupic = 7'b001_0111;  // u-type
 
     // Determine if the instruction is a CSR type using assign statement
     wire is_csr = (op == `CSR_OPCODE) && (funct3 == `CSR_FUNCT3_RW    ||

@@ -18,6 +18,8 @@
  */
 `default_nettype none
 `include "defines_soc.vh"
+/* verilator lint_off PINCONNECTEMPTY */
+/* verilator lint_off UNUSEDSIGNAL */
 module soc (
     input  wire       clk_osc,
     output wire       uart_tx,
@@ -309,3 +311,5 @@ module soc (
   assign cpu_mem_rdata = qqspi_mem_ready ? qqspi_mem_rdata : io_ready ? io_rdata : 32'h0000_0000;
 
 endmodule
+/* verilator lint_on PINCONNECTEMPTY */
+/* verilator lint_on UNUSEDSIGNAL */
